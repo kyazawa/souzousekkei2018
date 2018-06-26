@@ -1,5 +1,5 @@
 /* 心拍センサMAX30105 & OLEDディスプレイSSD1306 テストプログラム
- * 『Heart Rate Meter』 v0.0
+ * 『Heart Rate Meter』 v0.1 【ESP-WROOM-32対応版】
  *  2018.06.12. (Tue)
  *  創造設計2018 1班エレキ担当 矢澤杏平🍵
  *  Thanks For SparkFun(Sensor) & AdaFruit(OLED) !!
@@ -7,6 +7,9 @@
 
 /* 【来歴】
  *  2018.06.12. v0.0 新規作成 矢澤
+ *  2018.06.26  v0.1 【ESP-WROOM-32対応版】
+ *                    表示の配置を変更。平均値を中心にナマの値・イマの値を表示するように更新
+ *                    ＬＥＤの明るさを最大にした
  */
  
 /* 【メモリ使用率】 v0.0現在
@@ -21,9 +24,9 @@
  */
 
 /* 【使用回路】
- *  [Arduino Uno] --I2C-- [MAX30105] --I2C-- [OLED SSD1306]
+ *  [ESP32] --I2C-- [MAX30105] --I2C-- [OLED SSD1306]
  *                         (Addr:0xAE)        (Addr:0x3C)
- *  ※ 電源はいずれも5Vです。I2Cバスは4.7kΩでプルアップする。
+ *  ※ 電源はいずれも3.3Vです。I2Cバスは4.7kΩでプルアップする。
  */
 
 
@@ -56,6 +59,8 @@ long lastBeat = 0; //Time at which the last beat occurred
 float beatsPerMinute;
 int beatAvg;
 /* 上記はサンプル『Exaple5_HeartRate』からのコピペ */
+long rowIrValue = 0;
+
 
 /* ■ 初期化プログラム */
 void setup() {
@@ -70,7 +75,7 @@ void setup() {
 
 /* ■ メインループ */
 void loop() {
-  measureHeartRate(); /* 心拍の測定(ユーザ定義関数) */
+  rowIrValue = measureHeartRate(); /* 心拍の測定(ユーザ定義関数) */
   displayHeartRate(); /* 測定した心拍の表示(ユーザ定義関数) */
 }
 
@@ -87,15 +92,18 @@ void displayHeartRate(){
   display.setTextSize(1);
   display.setCursor(0,0);
   display.println("Heart Rate Meter v0.0");
-  display.print("Now:");
-  display.setTextSize(2);
-  display.print((int)beatsPerMinute);
-  display.setTextSize(1);
-  display.print(" Avg:");
-  display.setTextSize(2);
-  display.println((int)beatAvg);
+  display.setTextSize(3);
+  display.print((int)beatAvg);
 
-  if(kaisuu++ % 5 == 0){
+  display.setTextSize(1);
+  display.setCursor(60,10);
+  display.print("ROW:");
+  display.print(rowIrValue);
+  display.setCursor(60,20);
+  display.print("NOW:");
+  display.print(beatsPerMinute);
+
+  if(kaisuu++ % 20 == 0){
     display.display();
   }
 }
@@ -143,14 +151,14 @@ void sensorSetup(){
   Serial.println("Place your index finger on the sensor with steady pressure.");
 
   particleSensor.setup(); //Configure sensor with default settings
-  particleSensor.setPulseAmplitudeRed(0x0A); //Turn Red LED to low to indicate sensor is running
+  particleSensor.setPulseAmplitudeRed(0xFF); //Turn Red LED to low to indicate sensor is running
   particleSensor.setPulseAmplitudeGreen(0); //Turn off Green LED
 }
 
 /* measureHeartRate : 現在の心拍数を測定 */
-void measureHeartRate(){
+long measureHeartRate(){
   long irValue = particleSensor.getIR();
-
+  Serial.println(irValue);
   if (checkForBeat(irValue) == true)
   {
     //We sensed a beat!
@@ -159,7 +167,7 @@ void measureHeartRate(){
 
     beatsPerMinute = 60 / (delta / 1000.0);
 
-    if (beatsPerMinute < 255 && beatsPerMinute > 20)
+    if (beatsPerMinute < 255 && beatsPerMinute > 50)
     {
       rates[rateSpot++] = (byte)beatsPerMinute; //Store this reading in the array
       rateSpot %= RATE_SIZE; //Wrap variable
@@ -171,5 +179,6 @@ void measureHeartRate(){
       beatAvg /= RATE_SIZE;
     }
   }
+  return irValue;
 }
 
