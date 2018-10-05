@@ -4,15 +4,16 @@
 #define POWER_PIN 14
 #define LED_PIN 2
 #define PUSHSW_PIN 12
+#define VBAT_PIN 18
 
 /* 電源をオン（保持）する関数 */
 void powerON(){
-  digitalWrite(14, HIGH);
+  digitalWrite(POWER_PIN, HIGH);
 }
 
 /* 電源をオフする関数 */
 void powerOFF(){
-  digitalWrite(14, LOW);
+  digitalWrite(POWER_PIN, LOW);
 }
 
 /* LEDの点灯，消灯 */
@@ -45,8 +46,17 @@ boolean getPushSWRawValue(){
   return result;
 }
 
-/* 人間バッテリー値を返す関数 */
+/* 人間バッテリー値を返す関数（仮） */
 int getHumansBattery(void){
   return 50;
+}
+
+/* 電池電圧を検出する関数 [mv]で返す！ */
+unsigned int readBatteryVoltage(){
+  unsigned int adValue;
+  unsigned int bVoltage;
+  adValue = analogRead(VBAT_PIN); /* 12bitAD値取得 */
+  bVoltage = (1611 * adValue) / 1000; /* AD値→電池電圧 換算 */
+  return bVoltage;
 }
 

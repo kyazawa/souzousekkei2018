@@ -8,6 +8,7 @@ MAX30105 particleSensor;
 
 /* sensorSetup : センサの初期化設定 */
 void sensorSetup(){
+  while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
   // Initialize sensor
   if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) //Use default I2C port, 400kHz speed
   {
@@ -19,10 +20,12 @@ void sensorSetup(){
   particleSensor.setup(); //Configure sensor with default settings
   particleSensor.setPulseAmplitudeRed(0xFF); //Turn Red LED to low to indicate sensor is running
   particleSensor.setPulseAmplitudeGreen(0xFF); //Turn off Green LED
+  i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
 
 /* measureHeartRate : 現在の心拍数を測定 */
 long measureHeartRate(){
+  while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
   long irValue = particleSensor.getIR();
   Serial.println(irValue);
   if (checkForBeat(irValue) == true)
@@ -45,5 +48,12 @@ long measureHeartRate(){
       beatAvg /= RATE_SIZE;
     }
   }
+  i2cSemaphoreV(); /* i2cセマフォ解放 */
   return irValue;
 }
+
+int getBeatAvg(){
+  return beatAvg;
+}
+
+

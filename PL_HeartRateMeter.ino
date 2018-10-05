@@ -1,6 +1,6 @@
 /* 心拍センサMAX30105 & OLEDディスプレイSSD1306 テストプログラム
- * 『Heart Rate Meter』 v0.3 【ESP-WROOM-32対応版】
- *  2018.10.04. (Thu)
+ * 『Heart Rate Meter』 v0.4 【ESP-WROOM-32対応版】
+ *  2018.10.05. (Fri)
  *  創造設計2018 1班エレキ担当 矢澤杏平🍵
  *  Thanks For SparkFun(Sensor) & AdaFruit(OLED) !!
  */
@@ -11,7 +11,8 @@
  *                    表示の配置を変更。平均値を中心にナマの値・イマの値を表示するように更新
  *                    ＬＥＤの明るさを最大にした
  *  2018.07.04  v0.2  BLEなんとか対応版（無理やりなとこ多し・謎だらけ）
- *  2018.10.04  v0.3  ムダなところを削除！ファイルを分割
+ *  2018.10.04  v0.3  ムダなところを削除！ファルを！分割
+ *  2018.10.05  v0.4  マルチタスク化・セマフォを実装・プロトタイプ宣言を一元化(TeaWatch.h)
  */
 
 /*　【スタック足りない問題について】7/3
@@ -22,8 +23,8 @@
  */
 
 /* ■ ライブラリのインクルド */
-/* 【通信系】 */
 #include <Wire.h> /* I2Cライブラリ */
+#include "TeaWatch.h" /* まとめてプロトタイプ宣言 */
 
 /* ■心拍測定用グローバル変数 */
 const byte RATE_SIZE = 4; //Increase this for more averaging. 4 is good.
@@ -75,6 +76,20 @@ void setup() {
 /* ■ メインループ */
 void loop() {
   displayHeartRate(); /* 測定した心拍の表示(ユーザ定義関数) */
+
+#if 1
+  /***** デバッグ用 *****/
+  /* 現在の心拍，バッテリ電圧，ボタン状態，人間バッテリー値をシリアルに出力 */
+  Serial.print("beatAvg: ");
+  Serial.println(getBeatAvg());
+  Serial.print("Vbat: ");
+  Serial.println(readBatteryVoltage());
+  Serial.print("ButtonState: ");
+  Serial.println(readPushSW());
+  Serial.print("HumansBatteryValue: ");
+  Serial.println(getHumansBattery());
+#endif
+
   delay(1000);
 }
 
