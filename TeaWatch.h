@@ -1,42 +1,50 @@
-/* まとめて関数プロトタイプ宣言 */
+/* 関数リスト！ （関数プロトタイプ宣言） */
 
-/* BLE関連 */
+/* ● BLE関連(BLE.ino) */
+/* BLE初期化・接続 */
 void bleSetup();
+/* BLEﾒｯｾｰｼﾞ(nortify)送信 */
 void sendBleMsg(char * str);
 
-/* I2C */
-void i2cSemaphoreV();
-boolean i2cSemaphoreP();
+/* ● I2Cセマフォ(Semaphore.ino) */
+void i2cSemaphoreV();       /* V命令：資源解法 */
+boolean i2cSemaphoreP();    /* P命令：資源獲得 */
 
-/* 電源関連 */
-/* 電源をオン（保持）する関数 */
+/* ● 電源関連(Power.ino) */
+/* 電源をオン（保持）する関数(起動時に実行する) */
 void powerON();
 /* 電源をオフする関数 */
 void powerOFF();
-/* LEDの点灯，消灯 */
+/* LEDの点灯，消灯  (点灯=1, 消灯=0)*/
 void controlLED(boolean value);
 /* ピンの初期化 */
 void initPin();
-/* ボタンの読み取り(チャタリング除去後の値) */
+/* ボタンの読み取り(チャタリング除去後の値) (押されている=0, 押されてない=1) */
 boolean readPushSW();
 /* ボタンピン値の取得 */
 boolean getPushSWRawValue();
 /* 人間バッテリー値を返す関数（仮） */
 int getHumansBattery(void);
-/* 電池電圧を検出する関数 [mv]で返す！ */
+/* 電池電圧を検出する関数 (0～4200[mv] 整数値で返す) */
 unsigned int readBatteryVoltage();
 
-/* 心拍測定 */
-/* displayHeartRate : 現在の心拍数を表示 */
+/* ● ディスプレイ表示関連(Display.ino) */
+/* 現在の心拍数を表示 */
 void displayHeartRate();
-/* displayHumansBattery : 現在の人間バッテリー値を表示 */
+/* 現在の人間バッテリー値を表示 */
 void displayHumansBattery();
-/* displayOpening : オープニング画面を表示 */
+/* オープニング画面を表示 */
 void displayOpening();
-/* displaySetup : ディスプレイの初期化設定 */
+/* ディスプレイの初期化設定 */
 void displaySetup();
+/* ディスプレイに現在ｽﾃｰﾀｽを表示する */
+void displayMonitor();
 
+/* ● 心拍測定関連(HeartRate.ino) */
+/* 心拍センサ―初期化 */
 void sensorSetup();
+/* 心拍測定（１回分） */
 long measureHeartRate();
+/* 現在の心拍数平均を返す */
 int getBeatAvg();
 

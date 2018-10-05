@@ -27,6 +27,7 @@ void sensorSetup(){
 long measureHeartRate(){
   while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
   long irValue = particleSensor.getIR();
+  Serial.print("irValue: ");
   Serial.println(irValue);
   if (checkForBeat(irValue) == true)
   {

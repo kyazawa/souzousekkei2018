@@ -2,6 +2,9 @@
 #include <Adafruit_GFX.h> /* ディスプレイ用グラフィックライブラリ */
 #include <Adafruit_SSD1306.h> /* ディスプレイ用ライブラリ */
 
+/* ※注意※
+ *   ディスプレイ表示更新の際は，必ずI2Cセマフォで資源確保する！勝手に使わない！ 
+ */
 
 /* ②OLEDディスプレイ */
 #define OLED_RESET 4 /* OLEDのリセットピンはD4 */
@@ -37,6 +40,7 @@ void displayHumansBattery(){
   display.println("Humans Battery");
   display.setTextSize(3);
   display.print((int)getHumansBattery());
+  display.display();
   i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
 
@@ -78,3 +82,23 @@ void displaySetup(){
   delay(10); 
   i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
+
+/* displayMonitor : ディスプレイに現在ｽﾃｰﾀｽを表示する */
+void displayMonitor(){
+  while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  display.println("-TeaWatch Monitor-");
+  display.print("beat: ");
+  display.print(getBeatAvg());
+  display.print(" Vbat: ");
+  display.println(readBatteryVoltage());
+  display.print("Button: ");
+  display.print(readPushSW());
+  display.print(" HBT: ");
+  display.println(getHumansBattery());
+  display.display();
+  i2cSemaphoreV(); /* i2cセマフォ解放 */
+}
+
