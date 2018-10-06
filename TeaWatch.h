@@ -6,6 +6,11 @@
 #include <BLE2902.h>   /* BLE ESP32固有ライブラリ*/
 #include <Adafruit_GFX.h> /* ディスプレイ用グラフィックライブラリ */
 #include <Adafruit_SSD1306.h> /* ディスプレイ用ライブラリ */
+#include "BluetoothSerial.h"
+
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
 
 /* ● BLE関連(BLE.ino) */
 /* BLE初期化・接続 */
@@ -14,6 +19,13 @@ void bleSetup();
 void sendBleMsg(char * str);
 /* BLEﾒｯｾｰｼﾞ受信処理 */
 void recvBleMsg(char * str);
+
+void setupSPP();
+/* BLEでメッセージ送信 */
+void sendSppMsg(char * str);
+/* BLEﾒｯｾｰｼﾞ受信処理 */
+void recvSppMsg(char * str);
+
 
 /* ● I2Cセマフォ(Semaphore.ino) */
 void i2cSemaphoreV();       /* V命令：資源解法 */
