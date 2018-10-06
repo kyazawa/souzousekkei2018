@@ -14,6 +14,7 @@
  *  2018.10.04  v0.3  ムダなところを削除！ファルを！分割
  *  2018.10.05  v0.4  マルチタスク化・セマフォを実装・プロトタイプ宣言を一元化(TeaWatch.h)
  *  2018.10.05  v0.5  心拍タスクに記述ミスがあり修正，とりあえず動作確認済み🍵
+ *  2018.10.06  v0.6  ピン読み込み用タスクを追加。ボタン読み取りアルゴリズムを改善。
  */
  
 /* ■ ライブラリのインクルド */
@@ -31,8 +32,9 @@ long rowIrValue = 0;
 
 /* ■ スイッチ用グローバル変数 */
 byte swvalue;
+boolean clickedSW = 1;
 
-/* ■ 心拍測定/スイッチ検出 タスク 
+/* ■ 心拍測定 タスク 
  *  測定後の心拍はグローバル変数『beatAvg』より取得可能
  */
 portTickType Delay1 = portTICK_RATE_MS; //freeRTOS 用の遅延時間定義
@@ -41,12 +43,29 @@ void HEARTRATE_TSK(void *pvParameters){
   while(1){
     /* 心拍の測定 */
     rowIrValue = measureHeartRate(); 
-  
-    /* チャタリング除去(ピンの値を平均化する！) */
-    swvalue <<= 1;
-    swvalue |= getPushSWRawValue();
   }
 }
+
+/* ■ ピン読み込み タスク
+ *  
+ */
+TaskHandle_t pTsk;
+void PINREAD_TSK(void *pvParameters){
+  while(1){
+    /* ボタン入力値のサンプリング(10ms周期) */
+    swvalue <<= 1;
+    swvalue |= getPushSWRawValue();
+
+ /*
+    if((readPushSW()==0) && (clickedSW==1)){
+      clickedSW = 0;
+      Serial.println("clicked");
+    }
+    */
+    delay(10);
+  }
+}
+
 
 /* ■ 初期化プログラム */
 void setup() {
@@ -65,7 +84,18 @@ void setup() {
   
   delay(100);
 
-  /* 心拍測定タスク作成 */
+  /* ピン読み込みタスク起動 */
+  xTaskCreatePinnedToCore(
+           PINREAD_TSK,   /* タスク名 */
+           "PINREADE_TSK", /* ”タスク名” */
+           1024,            /* スタックサイズ */
+           NULL,            /* NULL(意味なし) */
+           1,               /* タスク優先度 */
+           &pTsk,           /* タスクハンドラ */
+           0                /* 動作コア(0 or 1) */
+  );
+
+  /* 心拍測定タスク起動 */
   xTaskCreatePinnedToCore(
            HEARTRATE_TSK,   /* タスク名 */
            "HEARTRATE_TSK", /* ”タスク名” */
@@ -82,23 +112,34 @@ void setup() {
 
 /* ■ メインループ */
 void loop() {
+  static boolean dmode=0;
   //displayHeartRate(); /* 測定した心拍の表示(ユーザ定義関数) */
 
-#if 1
+#if 0
   /***** デバッグ用 *****/
   /* 現在の心拍，バッテリ電圧，ボタン状態，人間バッテリー値をシリアルに出力 */
   Serial.print("beatAvg: ");
   Serial.println(getBeatAvg());
   Serial.print("Vbat: ");
   Serial.println(readBatteryVoltage());
-  Serial.print("ButtonState: ");
-  Serial.println(readPushSW());
   Serial.print("HumansBatteryValue: ");
   Serial.println(getHumansBattery());
+  Serial.print("dmode: ");
+  Serial.println(dmode);
 #endif
+  if(readPushSW()==0){
+    dmode = !dmode;
+    delay(100);
+    clickedSW = 1;
+  }
 
-  displayMonitor();
-  delay(1000);
+  if(dmode == 1){
+    displayMonitor();
+  }else{
+    displayHeartRate();
+  }
+  delay(50);
+  
 }
 
 

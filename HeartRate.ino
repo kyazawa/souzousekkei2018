@@ -1,6 +1,4 @@
 /* 【心拍センサ関連処理】 */
-#include "MAX30105.h"  /* 心拍センサライブラリ */
-#include "heartRate.h" /* 心拍測定ライブラリ */
 
 /* ①心拍センサ */
 MAX30105 particleSensor;
@@ -27,8 +25,10 @@ void sensorSetup(){
 long measureHeartRate(){
   while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
   long irValue = particleSensor.getIR();
+#if 0 /* デバッグ用 */
   Serial.print("irValue: ");
   Serial.println(irValue);
+#endif
   if (checkForBeat(irValue) == true)
   {
     //We sensed a beat!

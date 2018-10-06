@@ -1,6 +1,4 @@
 /* 【BLE関連処理】 */
-#include <BLEDevice.h>
-#include <BLE2902.h>
 
 
 /* ③BLE(内蔵) */
@@ -66,3 +64,10 @@ void sendBleMsg(char * str){
         delay(10); // bluetooth stack will go into congestion, if too many packets are sent
   }
 }
+
+/* BLEﾒｯｾｰｼﾞ受信処理 */
+void recvBleMsg(char * str){
+  /* なんらかの受信処理！ */
+  sprintf(str, "mojiretsu"); 
+}
+

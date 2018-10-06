@@ -1,10 +1,19 @@
 /* 関数リスト！ （関数プロトタイプ宣言） */
 
+#include "MAX30105.h"  /* 心拍センサライブラリ */
+#include "heartRate.h" /* 心拍測定ライブラリ */
+#include <BLEDevice.h> /* BLE通信ライブラリ */  
+#include <BLE2902.h>   /* BLE ESP32固有ライブラリ*/
+#include <Adafruit_GFX.h> /* ディスプレイ用グラフィックライブラリ */
+#include <Adafruit_SSD1306.h> /* ディスプレイ用ライブラリ */
+
 /* ● BLE関連(BLE.ino) */
 /* BLE初期化・接続 */
 void bleSetup();
 /* BLEﾒｯｾｰｼﾞ(nortify)送信 */
 void sendBleMsg(char * str);
+/* BLEﾒｯｾｰｼﾞ受信処理 */
+void recvBleMsg(char * str);
 
 /* ● I2Cセマフォ(Semaphore.ino) */
 void i2cSemaphoreV();       /* V命令：資源解法 */
@@ -21,7 +30,7 @@ void controlLED(boolean value);
 void initPin();
 /* ボタンの読み取り(チャタリング除去後の値) (押されている=0, 押されてない=1) */
 boolean readPushSW();
-/* ボタンピン値の取得 */
+/* ボタンピン生の値の取得 */
 boolean getPushSWRawValue();
 /* 人間バッテリー値を返す関数（仮） */
 int getHumansBattery(void);

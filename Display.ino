@@ -1,6 +1,4 @@
 /* 【グラフィック関連処理】 */
-#include <Adafruit_GFX.h> /* ディスプレイ用グラフィックライブラリ */
-#include <Adafruit_SSD1306.h> /* ディスプレイ用ライブラリ */
 
 /* ※注意※
  *   ディスプレイ表示更新の際は，必ずI2Cセマフォで資源確保する！勝手に使わない！ 
@@ -28,6 +26,7 @@ void displayHeartRate(){
   display.setCursor(60,20);
   display.print("NOW:");
   display.print(beatsPerMinute);
+  display.display();
   i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
 
@@ -94,8 +93,6 @@ void displayMonitor(){
   display.print(getBeatAvg());
   display.print(" Vbat: ");
   display.println(readBatteryVoltage());
-  display.print("Button: ");
-  display.print(readPushSW());
   display.print(" HBT: ");
   display.println(getHumansBattery());
   display.display();

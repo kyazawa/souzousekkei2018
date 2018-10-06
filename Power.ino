@@ -30,13 +30,31 @@ void initPin(){
 
 /* ボタンの読み取り(チャタリング除去後の値) */
 boolean readPushSW(){
-  static boolean swstate = 0;
-  if( (swvalue & 0xF) == 0xF ){
+  static boolean swstate = 0; /* 0:押されている 1:押されていない */
+  static boolean swstate_old = swstate; /* swstateの前回の値 */
+  static boolean sw_toggled = 1; /* 0:トグルされた，1:トグルされていない */
+  swstate_old = swstate;
+
+  /* チャタリングの除去 */
+  if( (swvalue & 0xF) == 0xF ){ /* swvalueはPINREAD_TSKで生成されている */
     swstate = 1; /* 4回連続1なら1 */
   }else if((swvalue & 0xF) == 0x0){
     swstate = 0; /* 4回連続0なら0 */
   } /* それ以外の場合，そのままの値を保持する */
-  return swstate;
+
+  /* トグル検出 */
+  if(swstate != swstate_old){ /* 前回からスイッチがトグルされていたら0 */
+    sw_toggled = 0;
+  }else{
+    sw_toggled = 1;
+  }
+
+  /* 立ち上がりのみ検出 */
+  if((swstate == 0) && (sw_toggled == 0)){
+    return 0; /* ボタンが押された */
+  }else{
+    return 1; /* ボタンが押されていない */
+  }
 }
 
 /* ボタンピン値の取得 */
