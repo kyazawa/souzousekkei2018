@@ -1,9 +1,18 @@
 /* 関数リスト！ （関数プロトタイプ宣言） */
 
+/* BLEの有効無効
+ * BLEは意味不明なので ↓を0にするとBLE関連のプログラムはコメントアウトされる
+ */
+#define BLE_EN 0
+
 #include "MAX30105.h"  /* 心拍センサライブラリ */
 #include "heartRate.h" /* 心拍測定ライブラリ */
+
+#if BLE_EN
 #include <BLEDevice.h> /* BLE通信ライブラリ */  
 #include <BLE2902.h>   /* BLE ESP32固有ライブラリ*/
+#endif
+
 #include <Adafruit_GFX.h> /* ディスプレイ用グラフィックライブラリ */
 #include <Adafruit_SSD1306.h> /* ディスプレイ用ライブラリ */
 #include "BluetoothSerial.h"
@@ -12,13 +21,16 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
+
 /* ● BLE関連(BLE.ino) */
+#if BLE_EN
 /* BLE初期化・接続 */
 void bleSetup();
 /* BLEﾒｯｾｰｼﾞ(nortify)送信 */
 void sendBleMsg(char * str);
 /* BLEﾒｯｾｰｼﾞ受信処理 */
 void recvBleMsg(char * str);
+#endif
 
 void setupSPP();
 /* BLEでメッセージ送信 */

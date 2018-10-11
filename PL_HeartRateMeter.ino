@@ -1,8 +1,8 @@
 /* 心拍センサMAX30105 & OLEDディスプレイSSD1306 テストプログラム
- * 『Heart Rate Meter』 v0.5 【ESP-WROOM-32対応版】
- *  2018.10.05. (Fri)
+ * 『Heart Rate Meter』 v0.8 【ESP-WROOM-32対応版】
+ *  2018.10.11. (Thu)
  *  創造設計2018 1班エレキ担当 矢澤杏平🍵
- *  Thanks For SparkFun(Sensor) & AdaFruit(OLED) !!
+ *  
  */
 
 /* 【来歴】
@@ -16,6 +16,8 @@
  *  2018.10.05  v0.5  心拍タスクに記述ミスがあり修正，とりあえず動作確認済み🍵
  *  2018.10.06  v0.6  ピン読み込み用タスクを追加。ボタン読み取りアルゴリズムを改善。
  *  2018.10.06  v0.7  クラシックBluetooth SPPの処理を追加(BluetoothSPP.ino) BLEは意味不明なため。
+ *  2018.10.11  v0.8  BLEは意味不明なので，すべてコメントアウト。BT SPP送信処理の取りこぼしを改善。
+ *                    BT SPPコマンドパース処理を追加(execCmd) 親機からのコマンドに応じた処理が可能に。
  */
  
 /* ■ ライブラリのインクルド */
@@ -44,6 +46,7 @@ void HEARTRATE_TSK(void *pvParameters){
   while(1){
     /* 心拍の測定 */
     rowIrValue = measureHeartRate(); 
+    delay(10); /* I2C資源解放のため */
   }
 }
 
@@ -109,7 +112,8 @@ void setup() {
   );
   
   delay(1000);
-  
+  sendProfile();
+  delay(100);
 }
 
 /* ■ メインループ */
@@ -141,7 +145,8 @@ void loop() {
     displayHeartRate();
   }
   delay(50);
-  
+
+  execCmd();
 }
 
 

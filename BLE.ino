@@ -1,6 +1,6 @@
 /* 【BLE関連処理】 */
 
-
+#if BLE_EN
 /* ③BLE(内蔵) */
 BLEServer* pServer = NULL;
 BLECharacteristic* pCharacteristic = NULL;
@@ -70,4 +70,4 @@ void recvBleMsg(char * str){
   /* なんらかの受信処理！ */
   sprintf(str, "mojiretsu"); 
 }
-
+#endif

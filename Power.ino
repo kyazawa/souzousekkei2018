@@ -64,15 +64,6 @@ boolean getPushSWRawValue(){
   return result;
 }
 
-/* 人間バッテリー値を返す関数（仮） */
-int getHumansBattery(void){ /* エラーハンドリングしていません！ */
-  char str[50];
-  int hBattery;
-  recvSppMsg(str);
-  sscanf(str, "%d", hBattery);
-  return hBattery;
-}
-
 /* 電池電圧を検出する関数 [mv]で返す！ */
 unsigned int readBatteryVoltage(){
   unsigned int adValue;
