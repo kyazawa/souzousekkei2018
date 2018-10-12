@@ -37,6 +37,14 @@ void setupSPP();
 void sendSppMsg(char * str);
 /* BLEﾒｯｾｰｼﾞ受信処理 */
 void recvSppMsg(char * str);
+/* Unknown */
+void sendProfile();
+/* Unknown */
+void execCmd();
+/* Unknown */
+void parseHbData(char *str);
+/* Unknown */
+int Atoi(char a);
 
 
 /* ● I2Cセマフォ(Semaphore.ino) */
@@ -80,4 +88,3 @@ void sensorSetup();
 long measureHeartRate();
 /* 現在の心拍数平均を返す */
 int getBeatAvg();
-
