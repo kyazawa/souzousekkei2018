@@ -17,6 +17,11 @@
 #include <Adafruit_SSD1306.h> /* ディスプレイ用ライブラリ */
 #include "BluetoothSerial.h"
 
+#if 0
+/*MPU6050 使用ライブラリ*/
+#include "MPU6050_6Axis_MotionApps20.h"
+#endif
+
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
@@ -88,3 +93,9 @@ void sensorSetup();
 long measureHeartRate();
 /* 現在の心拍数平均を返す */
 int getBeatAvg();
+
+/*<PU6050関連*/
+void Gryo_Start();
+void GyroGet();
+void GyroInit();
+
