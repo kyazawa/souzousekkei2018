@@ -99,3 +99,9 @@ void Gryo_Start();
 void GyroGet();
 void GyroInit();
 
+
+/*beat_queueユーザ関数定義*/
+void dequeue();
+void enqueue(double);
+void calucAvg();
+
