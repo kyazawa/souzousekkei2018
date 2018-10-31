@@ -1,5 +1,7 @@
 /* 【BLE関連処理】 */
 
+/* いらないので消してよいが一応残す */
+
 #if BLE_EN
 /* ③BLE(内蔵) */
 BLEServer* pServer = NULL;

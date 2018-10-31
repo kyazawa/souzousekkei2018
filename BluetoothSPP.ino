@@ -12,13 +12,6 @@ void setupSPP(){
  */
 void sendSppMsg(char * str){
   SerialBT.write((uint8_t *)str, strlen(str));
-  
-  /* ↓旧処理 低速のため廃止 10/11
-  while( *str  != '\0'){
-    SerialBT.write(*str);
-    str++;
-  }
-  */
 }
 
 /* SPPﾒｯｾｰｼﾞ受信処理 
@@ -46,6 +39,10 @@ void sendBarstBeatAvg(){
   char str[100];
   sprintf(str, "B ");
   for(int i=0; i<50; i++){
+
+    //一括送信 要実装！！！
+    // (送信ｲﾒｰｼﾞ) @B82,65,23,74,26,85,34,85,97........
+    
     sprintf(str, "%d,", getBeatAvg());
   }
   sendSppMsg(str);

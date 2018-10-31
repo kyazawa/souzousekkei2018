@@ -20,6 +20,7 @@
                       BT SPPコマンドパース処理を追加(execCmd) 親機からのコマンドに応じた処理が可能に
     2018.10.12  v0.9  中嶋ｺｰﾄﾞ（加速度）追加！※未デバッグ
     2018.10.18  v0.10 勝又コード 平均心拍計算 ⇒ 2018-10-18 マージ済み！ 矢澤
+    2018.10.31  v0.11 コードいろいろ整理
 */
 
 /* ■ ライブラリのインクルド */
@@ -77,6 +78,7 @@ void PINREAD_TSK(void *pvParameters) {
 void setup() {
   initPin(); /* ピン入出力初期化 */
   powerON(); /* 電源オンする */
+  
 
   /* シリアルポートの設定(デバッグ用) */
   Serial.begin(115200);
@@ -123,7 +125,7 @@ void loop() {
   static boolean dmode = 0;
   //displayHeartRate(); /* 測定した心拍の表示(ユーザ定義関数) */
 
-#if 0
+#if 1
   /***** デバッグ用 *****/
   /* 現在の心拍，バッテリ電圧，ボタン状態，人間バッテリー値をシリアルに出力 */
   Serial.print("beatAvg: ");
@@ -146,9 +148,13 @@ void loop() {
   } else {
     displayHeartRate();
   }
-  delay(50);
+  delay(500);
 
   execCmd();
+
+  char str[10];
+  sprintf(str, "test" );
+  //sendSppMsg(str);
 
   calucAvg();
 
