@@ -148,7 +148,7 @@ void loop() {
   } else {
     displayHeartRate();
   }
-  delay(500);
+  delay(50);
 
   execCmd();
 

@@ -1,24 +1,24 @@
 /*【Bluetooth SPP関連】*/
 BluetoothSerial SerialBT;
-int humansBattery; 
+int humansBattery;
 
-void setupSPP(){
-  SerialBT.begin("TeaWatch"); 
+void setupSPP() {
+  SerialBT.begin("TeaWatch");
   sendSppMsg("TeaWatch SPP Connected.\n");
 }
 
-/* SPPでメッセージ送信 
- * エラーハンドリングしていないので，多分簡単に死ぬ
- */
-void sendSppMsg(char * str){
+/* SPPでメッセージ送信
+   エラーハンドリングしていないので，多分簡単に死ぬ
+*/
+void sendSppMsg(char * str) {
   SerialBT.write((uint8_t *)str, strlen(str));
 }
 
-/* SPPﾒｯｾｰｼﾞ受信処理 
- * エラーハンドリングしていないので，多分簡単に死ぬ
- */
-void recvSppMsg(char * str){
-  while(SerialBT.available()){
+/* SPPﾒｯｾｰｼﾞ受信処理
+   エラーハンドリングしていないので，多分簡単に死ぬ
+*/
+void recvSppMsg(char * str) {
+  while (SerialBT.available()) {
     *str = SerialBT.read();
     str++;
   }
@@ -26,42 +26,49 @@ void recvSppMsg(char * str){
 }
 
 /* SPPで現在の心拍送信 */
-void sendBeatAvg(){
+void sendBeatAvg() {
   int beat;
   char str[10];
   beat = getBeatAvg();
-  sprintf(str, "%d" ,beat);
+  sprintf(str, "%d" , beat);
   sendSppMsg(str);
 }
 
 /* 心拍蓄積データを一気に送信 */
-void sendBarstBeatAvg(){
+void sendBarstBeatAvg() {
+
+  //一括送信 要実装！！！
+  // (送信ｲﾒｰｼﾞ) @B82,65,23,74,26,85,34,85,97........
   char str[100];
   sprintf(str, "B ");
-  for(int i=0; i<50; i++){
+  int i = 0, b = 0;
 
-    //一括送信 要実装！！！
-    // (送信ｲﾒｰｼﾞ) @B82,65,23,74,26,85,34,85,97........
-    
-    sprintf(str, "%d,", getBeatAvg());
+
+  while (!isnan(display_queue(b))) {
+    while (str[i] != '\0') {
+      i++;
+    }
+    sprintf(&str[i], "%d,", display_queue(b));
+    b++;
   }
   sendSppMsg(str);
 }
 
-void sendProfile(){
+
+void sendProfile() {
   sendSppMsg("TeaWatch by SouzouSekkei2018 Group1");
 }
 
 /* Bluetoothできたコマンドをパースし，実行 */
-void execCmd(){
+void execCmd() {
   char str[100];
-  int i=0;
-  
+  int i = 0;
+
   recvSppMsg(str);
-    
-  while((str[i]!='\0') && (str[i]!='\n')){
-    if(str[i] == '@'){
-      switch(str[i+1]){
+
+  while ((str[i] != '\0') && (str[i] != '\n')) {
+    if (str[i] == '@') {
+      switch (str[i + 1]) {
         case 'B':
           sendBarstBeatAvg();
           break;
@@ -72,7 +79,7 @@ void execCmd(){
           sendProfile();
           break;
         case 'h':
-          parseHbData(&str[i+2]);
+          parseHbData(&str[i + 2]);
           break;
       }
     }
@@ -81,15 +88,15 @@ void execCmd(){
 }
 
 /* 親機に人間バッテリー値送信要求 */
-void callHumansBattery(){
+void callHumansBattery() {
   sendSppMsg("@h");
 }
 
 /* 人間バッテリー値を親機から受け取り */
-void parseHbData(char * str){
-  int i=0;
-  int hbattery=0;
-  while((str[i]!='\0') && (str[i]!='\n')){
+void parseHbData(char * str) {
+  int i = 0;
+  int hbattery = 0;
+  while ((str[i] != '\0') && (str[i] != '\n')) {
     hbattery *= 10;  /* 桁繰り上げ */
     hbattery += Atoi(str[i]); /* char⇒int変換 */
     Serial.print(Atoi(str[i]));
@@ -101,20 +108,20 @@ void parseHbData(char * str){
 }
 
 /* 人間バッテリー値を返す関数（仮） */
-int getHumansBattery(void){
+int getHumansBattery(void) {
   return humansBattery;
 
   /* 旧コード！
-  char str[50];
-  int hBattery;
-  recvSppMsg(str);
-  sscanf(str, "%d", hBattery);
-  return hBattery;
+    char str[50];
+    int hBattery;
+    recvSppMsg(str);
+    sscanf(str, "%d", hBattery);
+    return hBattery;
   */
 }
 
 /* 文字(ASCII)から数字(Int)に変換する関数 */
-int Atoi(char a){
-  return (a-'0');
+int Atoi(char a) {
+  return (a - '0');
 }
 
