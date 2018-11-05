@@ -4,7 +4,8 @@
 #define POWER_PIN 14
 #define LED_PIN 2
 #define PUSHSW_PIN 12
-#define VBAT_PIN 25
+#define VBAT_PIN 34
+#define BATTOFST (+320) /* バッテリ電圧ｵﾌｾｯﾄ値（微調整） */
 
 /* 電源をオン（保持）する関数 */
 void powerON(){
@@ -71,6 +72,7 @@ unsigned int readBatteryVoltage(){
   unsigned int bVoltage;
   adValue = analogRead(VBAT_PIN); /* 12bitAD値取得 */
   bVoltage = (1611 * adValue) / 1000; /* AD値→電池電圧 換算 */
+  bVoltage += BATTOFST;
   return bVoltage;
 }
 
