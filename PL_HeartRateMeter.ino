@@ -21,6 +21,7 @@
     2018.10.12  v0.9  中嶋ｺｰﾄﾞ（加速度）追加！※未デバッグ
     2018.10.18  v0.10 勝又コード 平均心拍計算 ⇒ 2018-10-18 マージ済み！ 矢澤
     2018.10.31  v0.11 コードいろいろ整理
+    2018.11.05  v0.12 ＬＥＤ点灯機能追加，Ｉ２Ｃ正常動作確認。I2Cはgitに上がっている最新のIDEでないと動かない。ﾎﾞｰﾄﾞﾏﾈｰｼﾞｬからの方法では動かない
 */
 
 /* ■ ライブラリのインクルド */
@@ -78,7 +79,9 @@ void PINREAD_TSK(void *pvParameters) {
 void setup() {
   initPin(); /* ピン入出力初期化 */
   powerON(); /* 電源オンする */
-  
+
+  controlLED(1);  //LED点灯
+  WiFi.mode(WIFI_OFF);
 
   /* シリアルポートの設定(デバッグ用) */
   Serial.begin(115200);
@@ -148,14 +151,14 @@ void loop() {
   } else {
     displayHeartRate();
   }
-  delay(50);
 
+  controlLED(1);
+  delay(50);
+  controlLED(0);
+  
   execCmd();
 
   char str[10];
-  sprintf(str, "test" );
-  //sendSppMsg(str);
-
   calucAvg();
 
 }

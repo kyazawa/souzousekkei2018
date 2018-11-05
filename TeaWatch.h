@@ -27,6 +27,8 @@
 #endif
 
 
+#include <WiFi.h>
+
 /* ● BLE関連(BLE.ino) */
 #if BLE_EN
 /* BLE初期化・接続 */

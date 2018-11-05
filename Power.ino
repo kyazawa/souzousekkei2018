@@ -4,7 +4,7 @@
 #define POWER_PIN 14
 #define LED_PIN 2
 #define PUSHSW_PIN 12
-#define VBAT_PIN 18
+#define VBAT_PIN 25
 
 /* 電源をオン（保持）する関数 */
 void powerON(){
@@ -26,6 +26,7 @@ void initPin(){
   pinMode(POWER_PIN, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
   pinMode(PUSHSW_PIN, INPUT_PULLUP);
+  pinMode(VBAT_PIN, ANALOG);
 }
 
 /* ボタンの読み取り(チャタリング除去後の値) */
