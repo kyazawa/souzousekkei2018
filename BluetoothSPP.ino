@@ -48,7 +48,7 @@ void sendBarstBeatAvg() {
     while (str[i] != '\0') {
       i++;
     }
-    sprintf(&str[i], "%d,", display_queue(b));
+    sprintf(&str[i], "%d,", (int)display_queue(b));
     b++;
   }
   sendSppMsg(str);
