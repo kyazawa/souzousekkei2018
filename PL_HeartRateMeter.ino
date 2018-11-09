@@ -22,6 +22,9 @@
     2018.10.18  v0.10 勝又コード 平均心拍計算 ⇒ 2018-10-18 マージ済み！ 矢澤
     2018.10.31  v0.11 コードいろいろ整理
     2018.11.05  v0.12 ＬＥＤ点灯機能追加，Ｉ２Ｃ正常動作確認。I2Cはgitに上がっている最新のIDEでないと動かない。ﾎﾞｰﾄﾞﾏﾈｰｼﾞｬからの方法では動かない
+    2018.11.08  v0.13 （勝又）ダミーデータ送信処理追加
+    2018.11.09  v0.14 ディスプレイ消灯状態追加。センサＬＥＤ明るさをデフォルト値に変更。
+                      デバッグ用にBT送受信時にシリアルに通信内容出力するようにした
 */
 
 /* ■ ライブラリのインクルド */
@@ -63,13 +66,6 @@ void PINREAD_TSK(void *pvParameters) {
     /* ボタン入力値のサンプリング(10ms周期) */
     swvalue <<= 1;
     swvalue |= getPushSWRawValue();
-
-    /*
-       if((readPushSW()==0) && (clickedSW==1)){
-         clickedSW = 0;
-         Serial.println("clicked");
-       }
-    */
     delay(10);
   }
 }
@@ -125,8 +121,7 @@ void setup() {
 
 /* ■ メインループ */
 void loop() {
-  static boolean dmode = 0;
-  //displayHeartRate(); /* 測定した心拍の表示(ユーザ定義関数) */
+  static uint8_t dmode = 0;
 
 #if 1
   /***** デバッグ用 *****/
@@ -140,16 +135,35 @@ void loop() {
   Serial.print("dmode: ");
   Serial.println(dmode);
 #endif
+
+  /* ボタン押された⇒ディスプレイ状態を遷移 */
   if (readPushSW() == 0) {
-    dmode = !dmode;
+    if(dmode < 2){
+      dmode++;
+    }else{
+      dmode = 0;
+    }
+    
     delay(100);
     clickedSW = 1;
+
+    Serial.println("Button Clicked!");
   }
 
-  if (dmode == 1) {
-    displayMonitor();
-  } else {
-    displayHeartRate();
+
+  switch(dmode){
+    case 0:
+      /* 現在ステータス表示 */
+      displayMonitor();
+      break;
+    case 1:
+      /* 現在心拍表示 */
+      displayHeartRate();
+      break;
+    case 2:
+      /* ディスプレイ消灯 */
+      displayOff();
+      break;
   }
 
   controlLED(1);

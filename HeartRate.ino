@@ -16,8 +16,8 @@ void sensorSetup(){
   Serial.println("Place your index finger on the sensor with steady pressure.");
 
   particleSensor.setup(); //Configure sensor with default settings
-  particleSensor.setPulseAmplitudeRed(0xFF); //Turn Red LED to low to indicate sensor is running
-  particleSensor.setPulseAmplitudeGreen(0xFF); //Turn off Green LED
+  particleSensor.setPulseAmplitudeRed(0x1F); //Turn Red LED to low to indicate sensor is running
+  particleSensor.setPulseAmplitudeGreen(0x00); //Turn off Green LED
   i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
 

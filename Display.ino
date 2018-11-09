@@ -99,3 +99,11 @@ void displayMonitor(){
   i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
 
+/* displayOff: ディスプレイ消す */
+void displayOff(){
+  while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
+  display.clearDisplay();
+  display.display();
+  i2cSemaphoreV(); /* i2cセマフォ解放 */
+}
+

@@ -87,6 +87,8 @@ void displayOpening();
 void displaySetup();
 /* ディスプレイに現在ｽﾃｰﾀｽを表示する */
 void displayMonitor();
+/* ディスプレイ消す */
+void displayOff();
 
 /* ● 心拍測定関連(HeartRate.ino) */
 /* 心拍センサ―初期化 */
