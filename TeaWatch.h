@@ -29,6 +29,9 @@
 
 #include <WiFi.h>
 
+/* バッテリ残量アイコン  */
+#include "BattIcon.h"
+
 /* ● BLE関連(BLE.ino) */
 #if BLE_EN
 /* BLE初期化・接続 */
@@ -91,6 +94,8 @@ void displaySetup();
 void displayMonitor();
 /* ディスプレイ消す */
 void displayOff();
+/* 現在の物理バッテリー値を表示 */
+void displayLiionBattery();
 
 /* ● 心拍測定関連(HeartRate.ino) */
 /* 心拍センサ―初期化 */

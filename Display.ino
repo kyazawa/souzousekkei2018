@@ -64,42 +64,6 @@ static const unsigned char PROGMEM logo32_glcd_bmp[] ={
 
 };
 
-/* 50% */
-static const unsigned char PROGMEM BATTICON_LARGE_50P[] = {
-  B00000000, B10000000, B00000001, B00000000,
-  B00000000, B10000000, B00000001, B00000000,
-  B00000000, B10000000, B00000001, B00000000,
-  B11111111, B10000000, B00000001, B11111111,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10000000, B00000000, B00000000, B00000001,
-  B10111111, B11100000, B00000000, B00000001,
-  B10000000, B00011111, B11111000, B00000001,
-  B10000000, B00000000, B00000111, B11111101,
-  B10111111, B11100000, B00000000, B00000001,
-  B10000000, B00011111, B11111000, B00000001,
-  B10000000, B00000000, B00000111, B11111101,
-  B10111111, B11100000, B00000000, B00000001,
-  B10000000, B00011111, B11111000, B00000001,
-  B10000000, B00000000, B00000111, B11111101,
-  B10111111, B11100000, B00000000, B00000001,
-  B10000000, B00011111, B11111000, B00000001,
-  B10000000, B00000000, B00000111, B11111101,
-  B10111111, B11100000, B00000000, B00000001,
-  B10000000, B00011111, B11111000, B00000001,
-  B10000000, B00000000, B00000111, B11111101,
-  B10000000, B00000000, B00000000, B00000001,
-  B11111111, B11111111, B11111111, B11111111,
-};
-
 /* displayHeartRate : 現在の心拍数を表示 */
 void displayHeartRate(){
   while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
@@ -130,10 +94,8 @@ void displayHumansBattery(){
   display.println("Humans Battery");
   display.setTextSize(3);
   display.print((int)getHumansBattery());
-  //display.drawBitmap(80,16 , logo16_glcd_bmp, 16, 16, 1);
-  display.drawBitmap(90,0 , logo32_glcd_bmp, 32, 32, 1);
 
-#if 0
+#if 1
   /* バッテリアイコン表示  */
   if(getHumansBattery()<10){
     display.drawBitmap(90,0 , BATTICON_LARGE_10P, 32, 32, 1);
@@ -162,7 +124,7 @@ void displayHumansBattery(){
   else if(getHumansBattery()<90){
     display.drawBitmap(90,0 , BATTICON_LARGE_90P, 32, 32, 1);
   }
-  else(getHumansBattery()<=100){
+  else if(getHumansBattery()<=100){
     display.drawBitmap(90,0 , BATTICON_LARGE_100P , 32, 32, 1);
   }
   #endif
@@ -171,6 +133,57 @@ void displayHumansBattery(){
   i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
 
+
+/* displayLiionBattery : 現在の物理バッテリー値を表示 */
+void displayLiionBattery(){
+  while(i2cSemaphoreP() == 0); /* i2cセマフォ獲得できるまで待つ */
+
+  uint8_t batt = Convert_battery_to_percentage();
+  
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  display.println("Battery");
+  display.setTextSize(3);
+  display.print(batt);
+
+#if 1
+  /* バッテリアイコン表示  */
+  if(batt<10){
+    display.drawBitmap(90,0 , BATTICON_LARGE_10P, 32, 32, 1);
+  }
+  else if(batt<20){
+    display.drawBitmap(90,0 , BATTICON_LARGE_20P, 32, 32, 1);
+  }
+  else if(batt<30){
+    display.drawBitmap(90,0 , BATTICON_LARGE_30P, 32, 32, 1);
+  }
+  else if(batt<40){
+    display.drawBitmap(90,0 , BATTICON_LARGE_40P, 32, 32, 1);
+  }
+  else if(batt<50){
+    display.drawBitmap(90,0 , BATTICON_LARGE_50P, 32, 32, 1);
+  }
+  else if(batt<60){
+    display.drawBitmap(90,0 , BATTICON_LARGE_60P, 32, 32, 1);
+  }
+  else if(batt<70){
+    display.drawBitmap(90,0 , BATTICON_LARGE_70P, 32, 32, 1);
+  }
+  else if(batt<80){
+    display.drawBitmap(90,0 , BATTICON_LARGE_80P, 32, 32, 1);
+  }
+  else if(batt<90){
+    display.drawBitmap(90,0 , BATTICON_LARGE_90P, 32, 32, 1);
+  }
+  else if(batt<=100){
+    display.drawBitmap(90,0 , BATTICON_LARGE_100P , 32, 32, 1);
+  }
+  #endif
+
+  display.display();
+  i2cSemaphoreV(); /* i2cセマフォ解放 */
+}
 
 /* displayOpening : オープニング画面を表示 */
 void displayOpening(){

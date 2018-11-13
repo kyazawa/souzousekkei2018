@@ -27,6 +27,8 @@
                       デバッグ用にBT送受信時にシリアルに通信内容出力するようにした
     2018.11.13  v0.15 バッテリ電圧(mV)⇒残量(%)変換関数追加(勝又，行廣)
                       一回ダミー心拍送信コマンド(@d)追加(矢澤)⇒これらをマージ(矢澤)
+    2018.11.14  v0.16 バッテリアイコンビットマップを追加(行廣作成)，バッテリアイコン表示処理作成（行廣）
+                      物理バッテリ表示画面追加，人間バッテリー表示画面にアイコン表示機能追加
 */
 
 /* ■ ライブラリのインクルド */
@@ -140,7 +142,7 @@ void loop() {
 
   /* ボタン押された⇒ディスプレイ状態を遷移 */
   if (readPushSW() == 0) {
-    if(dmode < 3){
+    if(dmode < 4){
       dmode++;
     }else{
       dmode = 0;
@@ -163,13 +165,15 @@ void loop() {
       displayHeartRate();
       break;
     case 2:
-      /* ディスプレイ消灯 */
-      displayOff();
-      break;
-    case 3:
       /* 人間バッテリー値表示 */
       displayHumansBattery();
       break;
+    case 3:
+      /* 物理バッテリー値表示 */
+      displayLiionBattery();
+      break;
+    default:
+      displayOff();
   }
 
   controlLED(1);
