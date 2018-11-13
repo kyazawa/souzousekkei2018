@@ -17,20 +17,25 @@ void sendSppMsg(char * str) {
    エラーハンドリングしていないので，多分簡単に死ぬ
 */
 void recvSppMsg(char * str) {
+  uint8_t cnt = 0;
   while (SerialBT.available()) {
+    if (cnt == 0) {
+      Serial.println();
+      Serial.print("BT recv:");
+    }
     *str = SerialBT.read();
+    Serial.print(*str);
     str++;
+    cnt++;
   }
   *str = '\0';
-  Serial.print("BT recv:");
-  Serial.println(str);
 }
 /* SPPで現在の心拍送信 */
 void sendBeatAvg() {
   int beat;
   char str[10];
   beat = getBeatAvg();
-  sprintf(str, "%d" , beat);
+  sprintf(str, "%d,\n" , beat); /* カンマ追加 */
   sendSppMsg(str);
 }
 /* 心拍蓄積データを一気に送信 */
@@ -47,6 +52,13 @@ void sendBarstBeatAvg() {
     sprintf(&str[i], "%d,", (int)display_queue(b));
     b++;
   }
+
+  /* 最後にかいぎょう */
+  while (str[i] != '\0') {
+    i++;
+  }
+  sprintf(&str[i], "\n");
+  
   sendSppMsg(str);
 }
 /*ダミーデータの送信*/
@@ -71,8 +83,15 @@ void send_dummy_beat() {
     while (dummy_point[i] != '\0') {
       i++;
     }
-    sprintf(&dummy_point[i], "%d,", dummy_beat_data[j]);
+    sprintf(&dummy_point[i], "%d,", dummy_beat_data[j]); 
   }
+
+  /* 最後にかいぎょう */
+  while (dummy_point[i] != '\0') {
+    i++;
+  }
+  sprintf(&dummy_point[i], "\n");
+
   sendSppMsg(dummy_point);
 }
 void sendProfile() {
@@ -101,6 +120,8 @@ void execCmd() {
         case 'D':
           send_dummy_beat();
           break;
+        case 'd':
+          sendSingleDummyData();
       }
     }
     i++;
@@ -108,7 +129,7 @@ void execCmd() {
 }
 /* 親機に人間バッテリー値送信要求 */
 void callHumansBattery() {
-  sendSppMsg("@h");
+  sendSppMsg("@h\n");
 }
 /* 人間バッテリー値を親機から受け取り */
 void parseHbData(char * str) {
@@ -135,6 +156,33 @@ int getHumansBattery(void) {
     return hBattery;
   */
 }
+
+/* ダミーデータ単体で送る */
+void sendSingleDummyData(){
+  char str[100];
+  static byte pt=0; 
+  int dummy_beat_data[] = {59, 56, 69, 77, 63, 60, 56, 62, 65, 59, 71, 78, 75, 54, 62, 61, 56, 65, 57, 57, 52, 55, 72, 57, 55, 56, 59, 61, 71, 56,
+                           56, 57, 65, 64, 59, 53, 53, 52, 50, 50, 49, 49, 49, 54, 53, 53, 48, 74, 56, 57, 54, 78, 68, 65, 86, 55, 75, 62, 64, 65,
+                           71, 83, 79, 81, 92, 87, 102, 80, 84, 72, 72, 78, 59, 72, 61, 74, 69, 56, 59, 72, 96, 72, 68, 62, 64, 76, 90, 63, 78, 76,
+                           80, 72, 62, 77, 67, 91, 74, 68, 69, 91, 78, 75, 68, 77, 77, 70, 80, 71, 64, 64, 63, 73, 60, 75, 69, 85, 80, 99, 90, 73,
+                           103, 65, 70, 66, 69, 87, 79, 78, 96, 93, 89, 89, 81, 96, 97, 99, 89, 84, 90, 82, 77, 83, 92, 89, 74, 69, 89, 86, 80, 94,
+                           94, 113, 111, 129, 126, 106, 98, 84, 88, 96, 87, 83, 84, 83, 73, 80, 71, 72, 95, 95, 117, 126, 98, 103, 105, 114, 106,
+                           92, 99, 104, 97, 113, 129, 121, 118, 118, 118, 104, 110, 89, 127, 88, 90, 124, 121, 105, 122, 114, 115, 92, 104, 87, 72,
+                           75, 122, 139, 122, 102, 97, 105, 82, 92, 74, 75, 90, 87, 94, 93, 91, 91, 83, 93, 97, 89, 101, 96, 100, 104, 90, 89, 103,
+                           82, 85, 82, 91, 103, 103, 101, 98, 88, 109, 112, 93, 99, 87, 89, 78, 89, 65, 82, 81, 84, 92, 72, 68, 80, 86, 78, 79, 80,
+                           84, 84, 84, 80, 84, 77, 83, 84, 82, 81, 78, 80, 81, 72, 74, 81, 66, 75, 68, 75, 85, 84, 76, 81, 78, 76, 100, 63
+   };
+
+  sprintf(str, "%d,\n" , dummy_beat_data[pt]);
+  sendSppMsg(str);
+
+  if(pt < 288){
+    pt++; 
+  }else{
+    pt=0;
+  }
+}
+
 /* 文字(ASCII)から数字(Int)に変換する関数 */
 int Atoi(char a) {
   return (a - '0');

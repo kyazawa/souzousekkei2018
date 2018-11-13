@@ -25,6 +25,8 @@
     2018.11.08  v0.13 （勝又）ダミーデータ送信処理追加
     2018.11.09  v0.14 ディスプレイ消灯状態追加。センサＬＥＤ明るさをデフォルト値に変更。
                       デバッグ用にBT送受信時にシリアルに通信内容出力するようにした
+    2018.11.13  v0.15 バッテリ電圧(mV)⇒残量(%)変換関数追加(勝又，行廣)
+                      一回ダミー心拍送信コマンド(@d)追加(矢澤)⇒これらをマージ(矢澤)
 */
 
 /* ■ ライブラリのインクルド */
@@ -123,7 +125,7 @@ void setup() {
 void loop() {
   static uint8_t dmode = 0;
 
-#if 1
+#if 0
   /***** デバッグ用 *****/
   /* 現在の心拍，バッテリ電圧，ボタン状態，人間バッテリー値をシリアルに出力 */
   Serial.print("beatAvg: ");
@@ -138,7 +140,7 @@ void loop() {
 
   /* ボタン押された⇒ディスプレイ状態を遷移 */
   if (readPushSW() == 0) {
-    if(dmode < 2){
+    if(dmode < 3){
       dmode++;
     }else{
       dmode = 0;
@@ -164,11 +166,21 @@ void loop() {
       /* ディスプレイ消灯 */
       displayOff();
       break;
+    case 3:
+      /* 人間バッテリー値表示 */
+      displayHumansBattery();
+      break;
   }
 
   controlLED(1);
   delay(50);
   controlLED(0);
+
+  /* バッテリ残量確認 */
+  Serial.println("BATTERY");
+  Serial.println(Convert_battery_to_percentage());
+  Serial.println("BATTERY_CHAERGE");
+  Serial.println(Charge_battery());
   
   execCmd();
 

@@ -39,18 +39,25 @@ void calucAvg() {
 
 /*queueに入れる*/
 void enqueue(double Average_beat) {
-  //  if (tail_queue >= 288) return false; /*キュー容量の限界*/
+  #if 0
+  //if (tail_queue == 288) {
+    /*キュー容量の限界*/
+  //tail_queue = 0; * /
+#endif
   queue[tail_queue] = Average_beat;
   tail_queue++;
 }
 
 /*queueから取り出す*/
 void dequeue() {
-  //if (head_queue >= 288) return false; /*キュー容量の限界*/
+  #if 0
+  /*if (head_queue == 288) {
+    /*キュー容量の限界*/
+  head_queue = 0; */
+#endif
   *get_Average_beat = queue[head_queue];
   head_queue ++;
 }
-
 double display_queue(int i) {
   if (tail_queue < i) {
     return NAN;

@@ -52,6 +52,8 @@ void execCmd();
 void parseHbData(char *str);
 /* Unknown */
 int Atoi(char a);
+/* ダミーデータ単体で送る */
+void sendSingleDummyData();
 
 
 /* ● I2Cセマフォ(Semaphore.ino) */
@@ -103,9 +105,16 @@ void Gryo_Start();
 void GyroGet();
 void GyroInit();
 
-
 /*beat_queueユーザ関数定義*/
 void dequeue();
 void enqueue(double);
 void calucAvg();
 double display_queue(int);
+
+/*ダミーデータ送信用*/
+void send_dummy_beat();
+
+/*バッテリーパーセント表示*/
+int Convert_battery_to_percentage();
+int Charge_battery() ;
+
