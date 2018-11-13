@@ -61,8 +61,8 @@ void HEARTRATE_TSK(void *pvParameters) {
   }
 }
 
-/* ■ ピン読み込み タスク
-
+/* ■ ピン読み込みタスク
+*     ボタン入力値サンプリング・バッテリＡＤ値平均化処理
 */
 TaskHandle_t pTsk;
 void PINREAD_TSK(void *pvParameters) {
@@ -70,6 +70,10 @@ void PINREAD_TSK(void *pvParameters) {
     /* ボタン入力値のサンプリング(10ms周期) */
     swvalue <<= 1;
     swvalue |= getPushSWRawValue();
+
+    /* バッテリＡＤ値平均化処理 */
+    //averagingBattery();
+    
     delay(10);
   }
 }

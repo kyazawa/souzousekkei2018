@@ -80,6 +80,11 @@ boolean getPushSWRawValue();
 int getHumansBattery(void);
 /* 電池電圧を検出する関数 (0～4200[mv] 整数値で返す) */
 unsigned int readBatteryVoltage();
+/* バッテリ電圧平均化処理  */
+void averagingBattery();
+/* 平均化済みバッテリ電圧を返す */
+unsigned int getAvgBattVoltage();
+
 
 /* ● ディスプレイ表示関連(Display.ino) */
 /* 現在の心拍数を表示 */

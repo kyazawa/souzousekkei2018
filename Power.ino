@@ -7,6 +7,9 @@
 #define VBAT_PIN 34
 #define BATTOFST (+320) /* バッテリ電圧ｵﾌｾｯﾄ値（微調整） */
 
+/* ■ グローバル変数定義 */
+unsigned int BattADValue = 0;
+
 /* 電源をオン（保持）する関数 */
 void powerON(){
   digitalWrite(POWER_PIN, HIGH);
@@ -74,5 +77,23 @@ unsigned int readBatteryVoltage(){
   bVoltage = (1611 * adValue) / 1000; /* AD値→電池電圧 換算 */
   bVoltage += BATTOFST;
   return bVoltage;
+}
+
+/* バッテリ電圧平均化処理  */
+void averagingBattery(){
+  static uint8_t cnt=0;
+  
+  if(BattADValue == 0){
+    BattADValue = readBatteryVoltage();
+  }else{
+    BattADValue += readBatteryVoltage();
+    BattADValue /= 2;
+  }
+  
+}
+
+/* 平均化済みバッテリ電圧を返す */
+unsigned int getAvgBattVoltage(){
+  return BattADValue;
 }
 

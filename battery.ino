@@ -34,7 +34,7 @@ int Convert_battery_to_percentage() {
   int i;
   int count;
   double tmp;
-  battery = readBatteryVoltage();
+  battery =  readBatteryVoltage(); //getAvgBattVoltage(); /* 平均化した値を使用するように変更 */
   for (i = 0; i < 50; i++) {
     if (battery_RFC[i][1] > battery) count++;
     else break;
