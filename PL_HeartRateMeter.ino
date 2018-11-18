@@ -93,10 +93,11 @@ void setup() {
   Serial.println("Heart Rate Meter v0.0");
 
   sensorSetup(); /* センサの初期化(ユーザ定義関数) */
-  displaySetup(); /* ディスプレイ初期化(ユーザ定義関数) */
+  
   setupSPP();
   //bleSetup(); /* BLEの初期化(ユーザ定義関数) */
 
+  displaySetup(); /* ディスプレイ初期化(ユーザ定義関数) */
   displayOpening(); /* オープニング表示(ユーザ定義関数) */
 
   delay(100);
@@ -147,7 +148,7 @@ void loop() {
 
   /* ボタン押された⇒ディスプレイ状態を遷移 */
   if (readPushSW() == 0) {
-    if(dmode < 4){
+    if(dmode < 3){
       dmode++;
     }else{
       dmode = 0;
@@ -162,18 +163,23 @@ void loop() {
 
   switch(dmode){
     case 0:
-      /* 現在ステータス表示 */
-      displayMonitor();
-      break;
-    case 1:
       /* 現在心拍表示 */
       displayHeartRate();
       break;
-    case 2:
+      
+#if 0
+    case 1:
+      /* 現在ステータス表示 */
+      displayMonitor();
+      break;
+#endif
+      
+    case 1:
       /* 人間バッテリー値表示 */
       displayHumansBattery();
       break;
-    case 3:
+      
+    case 2:
       /* 物理バッテリー値表示 */
       displayLiionBattery();
       break;

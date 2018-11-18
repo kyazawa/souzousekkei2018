@@ -17,7 +17,7 @@ void sensorSetup(){
 
   particleSensor.setup(); //Configure sensor with default settings
   particleSensor.setPulseAmplitudeRed(0xFF); //Turn Red LED to low to indicate sensor is running
-  particleSensor.setPulseAmplitudeGreen(0x00); //Turn off Green LED
+  particleSensor.setPulseAmplitudeGreen(0x20); //Turn off Green LED
   i2cSemaphoreV(); /* i2cセマフォ解放 */
 }
 
